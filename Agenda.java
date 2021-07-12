@@ -7,10 +7,19 @@ import java.util.Arrays;
 
 public class Agenda {
 
-    ArrayList<Contato> agenda = new ArrayList<Contato>();
+    List<Contato> agenda = new ArrayList<>();
 
     public void adicionarContato(Contato contato) {
-        agenda.add(contato);
+      	if (contato.getNomeContato() != null && contato.getNomeContato() != "" && contato.getNumeroContato() != null && contato.getNumeroContato() != "" && contato.getIdContato() != null) {
+            if (contato.getNumeroContato().matches("^[0-9]+$")) {
+		agenda.add(contato);
+		return true;
+	    } else {
+		return false;
+	    }
+	} else {
+	  return false;
+	}
     }
 
     public void removerContato(Contato contato) {
