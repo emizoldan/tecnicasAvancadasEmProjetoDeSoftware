@@ -22,8 +22,39 @@ public class Agenda {
 	}
     }
 
-    public void removerContato(Contato contato) {
-        agenda.remove(contato);
+    public void removerContato(String nomeId) {
+
+        Optional<Integer> i = verificaNumero(nomeId);
+
+        i.ifPresentOrElse(
+                (value)
+                        ->
+                {
+                    Optional<Contato> c = buscarContatoPorId(value);
+                    if (c.isPresent()) {
+                        agenda.remove(c.get());
+                        System.out.println("Removido!");
+
+                    } else {
+                        System.out.println("Este contato não existe!");
+
+                    }
+                },
+                ()
+                        ->
+                {
+                    Optional<Contato> c = buscarContatoPorNome(nomeId);
+                    if (c.isPresent()) {
+                        agenda.remove(c.get());
+                        System.out.println("Removido!");
+
+                    } else {
+                        System.out.println("Este contato não existe!");
+
+                    }
+                }
+        );
+
     }
 
     public boolean listarContatos() {
@@ -60,14 +91,13 @@ public class Agenda {
         return null;
     }
 
-    public boolean verificaLetraOuNumero(String texto) {
+    private Optional<Integer> verificaNumero(String texto) {
 
-        if (texto.matches("[0-9]*")) {
-            return true;
-        } else {
-            return false;
-        }
-
+        if ((texto.matches("^[0-9]+$"))) {
+            Integer inteiro = Integer.parseInt(texto);
+	    return Optional.of(inteiro);
+        } 
+            return Optional.empty();
     }
 
     public Contato buscarContatoPorNome(String nome) {
