@@ -57,22 +57,24 @@ public class Agenda {
 
     }
 
-    public boolean listarContatos() {
-        if (agenda.size() != 0) {
-            System.out.println("--------------- LISTA DE CONTATOS ---------------");
-            for (int i = 0; i < agenda.size(); i++) {
-                System.out.println(agenda.get(i).getIdContato() + " : " + agenda.get(i).getNomeContato());
-                System.out.println(agenda.get(i).getNumeroContato());
-            }
-            return true;
-        } else {
-            System.out.println("Nenhum contato encontrado");
-            return false;
+    public void listarAtributos(Optional<Contato> contatoM) {
 
-        }
+        contatoM.ifPresentOrElse(
+                (value)
+                        ->
+                {
+                    System.out.println("Contato: " + value.getNomeContato());
+                    System.out.println("Id " + value.getIdContato());
+                    System.out.println("Numero: " + value.getNumeroContato());
+                },
+                ()
+                        ->
+                {
+                    System.out.println("Este contato não existe");
+                }
+        );
 
     }
-
     public ArrayList<Contato> getAgenda() {
             return agenda;
 
