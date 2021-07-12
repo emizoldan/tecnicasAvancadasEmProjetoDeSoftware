@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Agenda {
-
-    List<Contato> agenda = new ArrayList<>();
+	
+    private List<Contato> agenda = new ArrayList<>();
 
     public void adicionarContato(Contato contato) {
       	if (contato.getNomeContato() != null && contato.getNomeContato() != "" && contato.getNumeroContato() != null && contato.getNumeroContato() != "" && contato.getIdContato() != null) {
@@ -22,34 +22,34 @@ public class Agenda {
 	}
     }
 
-    public void removerContato(String nomeId) {
+    public boolean removerContato(String nomeId) {
 
-        Optional<Integer> i = verificaNumero(nomeId);
+        Optional<Integer> numero = verificaNumero(nomeId);
 
-        i.ifPresentOrElse(
+        numero.ifPresentOrElse(
                 (value)
                         ->
                 {
-                    Optional<Contato> c = buscarContatoPorId(value);
-                    if (c.isPresent()) {
-                        agenda.remove(c.get());
-                        System.out.println("Removido!");
+                    Optional<Contato> contato = buscarContatoPorId(value);
+                    if (contato.isPresent()) {
+                        agenda.remove(contato.get());
+                        return true;
 
                     } else {
-                        System.out.println("Este contato não existe!");
+                        return false;
 
                     }
                 },
                 ()
                         ->
                 {
-                    Optional<Contato> c = buscarContatoPorNome(nomeId);
-                    if (c.isPresent()) {
-                        agenda.remove(c.get());
-                        System.out.println("Removido!");
+                    Optional<Contato> contato = buscarContatoPorNome(nomeId);
+                    if (contato.isPresent()) {
+                        agenda.remove(contato.get());
+                        return true;
 
                     } else {
-                        System.out.println("Este contato não existe!");
+                        return false;
 
                     }
                 }
@@ -57,9 +57,9 @@ public class Agenda {
 
     }
 
-    public void listarAtributos(Optional<Contato> contatoM) {
+    public void listarAtributos(Optional<Contato> contato) {
 
-        contatoM.ifPresentOrElse(
+        contato.ifPresentOrElse(
                 (value)
                         ->
                 {
@@ -80,18 +80,16 @@ public class Agenda {
 
     }
 
+   public Optional<Contato> buscarContatoPorId(Integer id) {
 
-    public Contato buscarContatoPorId(int id) {
-
-        for (int i = 0; i < agenda.size(); i++) {
-
-            if (agenda.get(i).getIdContato() == id) {
-                return agenda.get(i);
+        for (Contato c : agenda)
+            if (c.getIdContato().equals(id)) {
+                return Optional.of(c);
             }
 
-        }
-        return null;
+        return Optional.empty();
     }
+	  
 
     private Optional<Integer> verificaNumero(String texto) {
 
@@ -102,13 +100,12 @@ public class Agenda {
             return Optional.empty();
     }
 
-    public Contato buscarContatoPorNome(String nome) {
+    public Optional<Contato> buscarContatoPorNome(String nome) {
 
-        for (int i = 0; i < agenda.size(); i++) {
-            if (agenda.get(i).getNomeContato().contains(nome)) {
-                return agenda.get(i);
+        for (Contato c : agenda)
+            if (c.getNomeContato().equalsIgnoreCase(nome)) {
+                return Optional.of(c);
             }
-        }
-        return null;
+        return Optional.empty();
     }
 }
