@@ -7,32 +7,74 @@ import java.util.Arrays;
 
 public class Agenda {
 
-    ArrayList<Contato> agenda = new ArrayList<Contato>();
+    List<Contato> agenda = new ArrayList<>();
 
     public void adicionarContato(Contato contato) {
-        agenda.add(contato);
+      	if (contato.getNomeContato() != null && contato.getNomeContato() != "" && contato.getNumeroContato() != null && contato.getNumeroContato() != "" && contato.getIdContato() != null) {
+            if (contato.getNumeroContato().matches("^[0-9]+$")) {
+		agenda.add(contato);
+		return true;
+	    } else {
+		return false;
+	    }
+	} else {
+	  return false;
+	}
     }
 
-    public void removerContato(Contato contato) {
-        agenda.remove(contato);
+    public void removerContato(String nomeId) {
+
+        Optional<Integer> i = verificaNumero(nomeId);
+
+        i.ifPresentOrElse(
+                (value)
+                        ->
+                {
+                    Optional<Contato> c = buscarContatoPorId(value);
+                    if (c.isPresent()) {
+                        agenda.remove(c.get());
+                        System.out.println("Removido!");
+
+                    } else {
+                        System.out.println("Este contato não existe!");
+
+                    }
+                },
+                ()
+                        ->
+                {
+                    Optional<Contato> c = buscarContatoPorNome(nomeId);
+                    if (c.isPresent()) {
+                        agenda.remove(c.get());
+                        System.out.println("Removido!");
+
+                    } else {
+                        System.out.println("Este contato não existe!");
+
+                    }
+                }
+        );
+
     }
 
-    public boolean listarContatos() {
-        if (agenda.size() != 0) {
-            System.out.println("--------------- LISTA DE CONTATOS ---------------");
-            for (int i = 0; i < agenda.size(); i++) {
-                System.out.println(agenda.get(i).getIdContato() + " : " + agenda.get(i).getNomeContato());
-                System.out.println(agenda.get(i).getNumeroContato());
-            }
-            return true;
-        } else {
-            System.out.println("Nenhum contato encontrado");
-            return false;
+    public void listarAtributos(Optional<Contato> contatoM) {
 
-        }
+        contatoM.ifPresentOrElse(
+                (value)
+                        ->
+                {
+                    System.out.println("Contato: " + value.getNomeContato());
+                    System.out.println("Id " + value.getIdContato());
+                    System.out.println("Numero: " + value.getNumeroContato());
+                },
+                ()
+                        ->
+                {
+                    System.out.println("Este contato não existe");
+                }
+        );
 
     }
-
     public ArrayList<Contato> getAgenda() {
             return agenda;
 
@@ -51,14 +93,13 @@ public class Agenda {
         return null;
     }
 
-    public boolean verificaLetraOuNumero(String texto) {
+    private Optional<Integer> verificaNumero(String texto) {
 
-        if (texto.matches("[0-9]*")) {
-            return true;
-        } else {
-            return false;
-        }
-
+        if ((texto.matches("^[0-9]+$"))) {
+            Integer inteiro = Integer.parseInt(texto);
+	    return Optional.of(inteiro);
+        } 
+            return Optional.empty();
     }
 
     public Contato buscarContatoPorNome(String nome) {
